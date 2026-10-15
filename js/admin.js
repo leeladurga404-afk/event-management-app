@@ -4,9 +4,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {
   collection, addDoc, doc, getDoc, updateDoc, deleteDoc,
-  onSnapshot, query, orderBy, serverTimestamp
+  onSnapshot, query, orderBy, where, getDocs, writeBatch, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-
 // ---------- Page elements ----------
 const loading = document.getElementById("loading");
 const app = document.getElementById("app");
@@ -101,9 +100,18 @@ eventList.addEventListener("click", async (ev) => {
   if (btn.dataset.action === "edit") {
     openForm(eventsById.get(id));
   } else if (btn.dataset.action === "delete") {
-    if (confirm("Delete this event? This cannot be undone.")) {
+        if (confirm("Delete this event and all its registrations? This cannot be undone.")) {
       try {
-        await deleteDoc(doc(db, "events", id));
+        // Find every registration for this event
+        const regsSnap = await getDocs(
+          query(collection(db, "registrations"), where("eventId", "==", id))
+        );
+
+        // Delete the registrations and the event together in one batch
+        const batch = writeBatch(db);
+        regsSnap.forEach((r) => batch.delete(r.ref));
+        batch.delete(doc(db, "events", id));
+        await batch.commit();
       } catch (err) {
         console.error(err);
         alert("Could not delete the event.");
