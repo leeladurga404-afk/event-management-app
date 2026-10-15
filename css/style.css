@@ -23,3 +23,12 @@ body {
   padding: 0.6rem;
   font-weight: 600;
 }
+
+.app-bg {
+  background: #f4f6fb;
+  min-height: 100vh;
+}
+
+.card-title {
+  color: #3b4cca;
+}
