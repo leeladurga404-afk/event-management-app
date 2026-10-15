@@ -14,3 +14,6 @@ Build an admin page where only admins can add, edit, and delete events (title, d
 ## Notes
 - Fixed: git "not a repository" error by running `git init`.
 - Changed my user's role to "admin" manually in the Firestore console.
+
+## Prompt 4: Student events page
+Build a student page that lists events as Bootstrap cards, lets students register and cancel using Firestore transactions (block duplicates and full events), and has a "My Registrations" tab. Update live with onSnapshot.
