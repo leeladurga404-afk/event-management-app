@@ -1,0 +1,25 @@
+body {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f8f9fa 100%);
+  min-height: 100vh;
+}
+
+.auth-wrapper {
+  padding-top: 8vh;
+  padding-bottom: 4vh;
+}
+
+.brand {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #3b4cca;
+}
+
+.card {
+  border: none;
+  border-radius: 1rem;
+}
+
+.btn {
+  padding: 0.6rem;
+  font-weight: 600;
+}
