@@ -2,19 +2,14 @@ import { auth, db } from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   onAuthStateChanged,
   updateProfile
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import {
   doc, setDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  onAuthStateChanged,
-  updateProfile
-} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
 // ---------- Page elements ----------
 const tabLogin = document.getElementById("tab-login");
 const tabSignup = document.getElementById("tab-signup");
@@ -22,8 +17,6 @@ const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 const messageBox = document.getElementById("message");
 
-// While true, the "already logged in" check below is skipped,
-// so it doesn't redirect before the user's Firestore document is saved.
 let isSigningUp = false;
 
 // ---------- Tab switching ----------
@@ -86,7 +79,6 @@ signupForm.addEventListener("submit", async (e) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
 
-    // Save the user's profile; document ID = their uid
     await setDoc(doc(db, "users", cred.user.uid), {
       name,
       email,
@@ -126,25 +118,30 @@ loginForm.addEventListener("submit", async (e) => {
     btn.textContent = "Login";
   }
 });
+
 // ---------- Forgot password ----------
-document.getElementById("forgotLink").addEventListener("click", async (e) => {
-  e.preventDefault();
-  hideMessage();
+const forgotLink = document.getElementById("forgotLink");
+if (forgotLink) {
+  forgotLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+    hideMessage();
 
-  const email = document.getElementById("loginEmail").value.trim();
-  if (!email) {
-    showMessage("Type your email in the Email box first, then click Forgot password.", "warning");
-    return;
-  }
+    const email = document.getElementById("loginEmail").value.trim();
+    if (!email) {
+      showMessage("Type your email in the Email box first, then click Forgot password.", "warning");
+      return;
+    }
 
-  try {
-    await sendPasswordResetEmail(auth, email);
-    showMessage("If an account exists for this email, a reset link has been sent. Check your inbox and spam folder.", "success");
-  } catch (err) {
-    console.error(err);
-    showMessage(friendlyError(err.code));
-  }
-});
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showMessage("If an account exists for this email, a reset link has been sent. Check your inbox and spam folder.", "success");
+    } catch (err) {
+      console.error(err);
+      showMessage(friendlyError(err.code));
+    }
+  });
+}
+
 // ---------- Already logged in? Skip this page ----------
 onAuthStateChanged(auth, (user) => {
   if (user && !isSigningUp) {
