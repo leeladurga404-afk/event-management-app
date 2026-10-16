@@ -24,3 +24,6 @@ Improve the UI with gradients, card hover effects and pill tabs using CSS only. 
 ## Prompt 6: Bug fix, orphaned registrations
 When an admin deletes an event, the student's registration still showed up. Fixed by deleting the event and its registrations together with a Firestore writeBatch, and by filtering registrations for events that no longer exist on the student page.
 
+## Prompt 8: Admin tabs, sorting and forgot password
+Move the Registered Students table into a separate tab on the admin page, sort registrations by event date, time and name, and add a Forgot Password link using Firebase sendPasswordResetEmail.
+

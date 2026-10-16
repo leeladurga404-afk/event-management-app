@@ -101,6 +101,19 @@ document.getElementById("logoutBtn").addEventListener(
     window.location.href = "index.html";
   }
 );
+// ---------- Tabs ----------
+const tabEvents = document.getElementById("tab-events");
+const tabRegs = document.getElementById("tab-regs");
+
+function showTab(which) {
+  const isEvents = which === "events";
+  document.getElementById("eventsSection").classList.toggle("d-none", !isEvents);
+  document.getElementById("regsSection").classList.toggle("d-none", isEvents);
+  tabEvents.classList.toggle("active", isEvents);
+  tabRegs.classList.toggle("active", !isEvents);
+}
+tabEvents.addEventListener("click", () => showTab("events"));
+tabRegs.addEventListener("click", () => showTab("regs"));
 
 // ---------- Live events ----------
 function listenToEvents() {
@@ -353,13 +366,17 @@ function listenToRegistrations() {
       }));
 
       // Show the newest registrations first where timestamps exist.
-      registrations.sort((a, b) => {
-        const aTime = a.registeredAt?.toMillis?.() || 0;
-        const bTime = b.registeredAt?.toMillis?.() || 0;
-        return bTime - aTime;
-      });
+            // Sort by event date, then time, then event name, then student name
+      registrations.sort((a, b) =>
+        (a.eventDate || "").localeCompare(b.eventDate || "") ||
+        (a.eventTime || "").localeCompare(b.eventTime || "") ||
+        (a.eventTitle || "").localeCompare(b.eventTitle || "") ||
+        (a.userName || "").localeCompare(b.userName || "")
+      );
 
       registrationCount.textContent = registrations.length;
+
+      document.getElementById("tabRegCount").textContent = registrations.length;
 
       registrationsEmptyMsg.classList.toggle(
         "d-none",
@@ -370,12 +387,12 @@ function listenToRegistrations() {
         const row = document.createElement("tr");
 
         const values = [
-          registration.userName || "Unknown",
-          registration.userEmail || "Not available",
           registration.eventTitle || "Unknown event",
           registration.eventDate || "—",
           registration.eventTime || "—",
-          registration.eventVenue || "—"
+          registration.eventVenue || "—",
+          registration.userName || "Unknown",
+          registration.userEmail || "Not available"
         ];
 
         values.forEach((value) => {

@@ -8,7 +8,13 @@ import {
 import {
   doc, setDoc, getDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 // ---------- Page elements ----------
 const tabLogin = document.getElementById("tab-login");
 const tabSignup = document.getElementById("tab-signup");
@@ -120,7 +126,25 @@ loginForm.addEventListener("submit", async (e) => {
     btn.textContent = "Login";
   }
 });
+// ---------- Forgot password ----------
+document.getElementById("forgotLink").addEventListener("click", async (e) => {
+  e.preventDefault();
+  hideMessage();
 
+  const email = document.getElementById("loginEmail").value.trim();
+  if (!email) {
+    showMessage("Type your email in the Email box first, then click Forgot password.", "warning");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMessage("If an account exists for this email, a reset link has been sent. Check your inbox and spam folder.", "success");
+  } catch (err) {
+    console.error(err);
+    showMessage(friendlyError(err.code));
+  }
+});
 // ---------- Already logged in? Skip this page ----------
 onAuthStateChanged(auth, (user) => {
   if (user && !isSigningUp) {
