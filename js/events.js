@@ -142,7 +142,11 @@ function render() {
   emptyAll.classList.toggle("d-none", events.length > 0);
 
   // My registrations
-  const mine = [...myRegs.values()].sort((a, b) => (a.eventDate || "").localeCompare(b.eventDate || ""));
+  const existingIds = new Set(events.map((e) => e.id));
+  const mine = [...myRegs.values()]
+    .filter((r) => existingIds.has(r.eventId))   // hide registrations whose event was deleted
+    .sort((a, b) => (a.eventDate || "").localeCompare(b.eventDate || ""));
+    
   myList.innerHTML = mine.map((r) => `
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card h-100 shadow-sm">

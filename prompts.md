@@ -17,3 +17,10 @@ Build an admin page where only admins can add, edit, and delete events (title, d
 
 ## Prompt 4: Student events page
 Build a student page that lists events as Bootstrap cards, lets students register and cancel using Firestore transactions (block duplicates and full events), and has a "My Registrations" tab. Update live with onSnapshot.
+
+## Prompt 5: UI polish and security rules
+Improve the UI with gradients, card hover effects and pill tabs using CSS only. Write Firestore security rules so only admins manage events, students can only register for themselves, and nobody can change their own role.
+
+## Prompt 6: Bug fix, orphaned registrations
+When an admin deletes an event, the student's registration still showed up. Fixed by deleting the event and its registrations together with a Firestore writeBatch, and by filtering registrations for events that no longer exist on the student page.
+
